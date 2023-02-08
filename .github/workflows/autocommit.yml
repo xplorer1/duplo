@@ -25,14 +25,6 @@ jobs:
           token_scope=$(curl -s -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" https://api.github.com/user | jq -r '.scope')
           echo "Token Scope: $token_scope"
 
-
-      - name: Debug Git Config
-        run: cat .git/config
-      - name: Debug Git Status
-        run: git status
-      - name: Debug PAT_TOKEN
-        run: echo "PAT_TOKEN=${{ secrets.PAT_TOKEN }}"
-
       - name: Modify last update
         run: |
           d=`date '+%Y-%m-%dT%H:%M:%SZ'`
@@ -56,8 +48,7 @@ jobs:
           arr[9]="Chijioke Ugwuanyi: 👻 auto commit"
           
           rand=$[$RANDOM % ${#arr[@]}]
-          
-          git commit -m "${arr[$rand]}"
+          GIT_AUTHOR_DATE='2023-02-08T10:30:00' GIT_COMMITTER_DATE='2023-02-08T10:30:00' git commit -m 'new (old) files'
           
       - name: GitHub Push
         uses: ad-m/github-push-action@v0.6.0
