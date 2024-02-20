@@ -19,7 +19,13 @@ jobs:
         with:
          persist-credentials: false
          fetch-depth: 0
-         
+
+      - name: Verify GITHUB_TOKEN
+        run: |
+          token_scope=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user | jq -r '.scope')
+          echo "Token Scope: $token_scope"
+
+
       - name: Debug Git Config
         run: cat .git/config
       - name: Debug Git Status
