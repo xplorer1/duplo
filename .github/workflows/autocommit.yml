@@ -51,3 +51,9 @@ jobs:
         with:
           directory: "."
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Debug Git Config
+        run: cat .git/config
+      - name: Debug Git Status
+        run: git status
+      - name: Debug GITHUB_TOKEN
+        run: echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
