@@ -13,7 +13,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
       - name: Read and commit joke
         run: |
           # Add your script/command to read a joke from the file and commit it
