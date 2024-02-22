@@ -1,57 +1,39 @@
-name: Auto commit
+name: Daily Joke Commit
 
 on:
-
   push:
     branches:
       - master
-      
   schedule:
-  - cron: "* * * * *" # See https://crontab.guru/#0_7,9,11_*_*_1,3 //to change
+    - cron: "* * * * *" # Run every day at midnight
 
 jobs:
-  auto_commit:
+  commit-joke:
     runs-on: ubuntu-latest
     steps:
-      - name: DEBUG 
-        run: echo "::debug::Ref = ${{github.ref}}"
-      - uses: actions/checkout@v3      
-        with:
-         persist-credentials: false
-         fetch-depth: 0
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Verify PAT_TOKEN
+      - name: Read and commit joke
         run: |
-          token_scope=$(curl -s -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" https://api.github.com/user | jq -r '.scope')
-          echo "Token Scope: $token_scope"
+          # Add your script/command to read a joke from the file and commit it
+          # For example:
+          current_line=$(cat current_line.txt)
+          # Read the joke from the specified line
+          joke=$(sed -n "${current_line}p" jokes.txt)
 
-      - name: Modify last update
-        run: |
-          d=`date '+%Y-%m-%dT%H:%M:%SZ'`
-          echo $d > LAST_UPDATED
-          
-      - name: Commit changes
-        run: |
-          git config --local user.email "cj.ugwuanyi@gmail.com"
-          git config --local user.name "xplorer1"
-          git add -A
-          
-          arr[0]="Chijioke Ugwuanyi: 😂 auto commit"
-          arr[1]="Chijioke Ugwuanyi: 😱 auto commit"
-          arr[2]="Chijioke Ugwuanyi: 👿 auto commit"
-          arr[3]="Chijioke Ugwuanyi: 💩 auto commit"
-          arr[4]="Chijioke Ugwuanyi: 🙏 auto commit"
-          arr[5]="Chijioke Ugwuanyi: 🙈 auto commit"
-          arr[6]="Chijioke Ugwuanyi: 🐐 auto commit"
-          arr[7]="Chijioke Ugwuanyi: 🤖 auto commit"
-          arr[8]="Chijioke Ugwuanyi: 🟩 auto commit"
-          arr[9]="Chijioke Ugwuanyi: 👻 auto commit"
-          
-          rand=$[$RANDOM % ${#arr[@]}]
-          GIT_AUTHOR_DATE='2023-02-08T10:30:00' GIT_COMMITTER_DATE='2023-02-08T10:30:00' git commit -m 'new (old) files'
-          
-      - name: GitHub Push
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          directory: "."
-          github_token: ${{ secrets.PAT_TOKEN }}
+          # Increment the line number for the next run
+          echo "$((current_line + 1))" > current_line.txt
+
+          joke=$(head -n 1 jokes.txt)
+          echo $joke >> README.md
+          git config user.name "Chijioke Ugwuanyi"
+          git config user.email "cj.ugwuanyi@gmail.com"
+          git add README.md current_line.txt
+
+          current_date=$(date -d '2023-07-11T10:30:00' --iso-8601=seconds)
+          next_date=$(date -d "$current_date + 1 day" --iso-8601=seconds)
+
+          GIT_AUTHOR_DATE=$next_date GIT_COMMITTER_DATE=$next_date git commit -m "Add joke for $(date -d "$next_date" +'%Y-%m-%dT%H:%M:%S')"
+          current_date=$next_date
+          git push
