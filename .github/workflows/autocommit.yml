@@ -6,7 +6,7 @@ on:
       - master
       
   schedule:
-  - cron: "0 */6 * * *" # See https://crontab.guru/#0_7,9,11_*_*_1,3 //to change
+  - cron: "0 */10 * * *" # See https://crontab.guru/#0_7,9,11_*_*_1,3 //to change
 
 jobs:
   auto_commit:
@@ -47,7 +47,7 @@ jobs:
           arr[9]="Chijioke Ugwuanyi: 👻 auto commit"
           
           rand=$[$RANDOM % ${#arr[@]}]
-          GIT_AUTHOR_DATE='2023-02-08T10:30:00' GIT_COMMITTER_DATE='2023-02-08T10:30:00' git commit -m 'new (old) files'
+          GIT_AUTHOR_DATE='2022-02-08T10:30:00' GIT_COMMITTER_DATE='2022-02-08T10:30:00' git commit -m 'To push old files.'
           
       - name: GitHub Push
         uses: ad-m/github-push-action@v0.6.0
